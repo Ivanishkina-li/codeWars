@@ -77,22 +77,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // app.listen(port, () => {
 //   console.log(`Example app listening on port ${port}`);
 // });
+//урок 9
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
-const port = 3000;
+const port = 3003;
 // app.get("/", (req, res) => {
 //   res.send({ message: "it-incubatorr" });
 // });
 //вводим это в консоли по ссылке на порт fetch('http://localhost:3000', {method:'GET'}).then(res => res.json()).then(data => console.log(data))
 // и получим ответ {message: 'it-incubator'}
-app.get("/courses", (req, res) => {
-    res.json([
+let db = {
+    courses: [
         { id: 1, title: "frontend" },
         { id: 2, title: "backend" },
         { id: 3, title: "automation qa" },
         { id: 4, title: "devops" },
-    ]);
+    ],
+};
+app.get("/courses", (req, res) => {
+    let foundedCourses = db.courses;
+    if (req.query.title) {
+        //если подстрока передана то делаем фиольтрацию
+        foundedCourses = foundedCourses.filter((c) => c.title.indexOf(req.query.title) > -1);
+    }
+    res.json(foundedCourses);
 });
+//при http://localhost:3000/courses?title=end   получаем  [{"id":1,"title":"frontend"},{"id":2,"title":"backend"}]
 //ответ
 // 4) [{…}, {…}, {…}, {…}]
 // 0
@@ -107,20 +117,19 @@ app.get("/courses", (req, res) => {
 // 3
 // :
 // {id: 4, title: 'devops'}
+// app.delete("/courses/:id", (req, res) => {
+//   db.courses = db.courses.find((c) => c.id === +req.params.id);
+//   res.sendStatus(204);
+// });
 app.get("/courses/:id", (req, res) => {
-    const FoundCourse = [
-        { id: 1, title: "frontend" },
-        { id: 2, title: "backend" },
-        { id: 3, title: "automation qa" },
-        { id: 4, title: "devops" },
-    ].find((c) => c.id === +req.params.id);
+    const FoundCourse = db.courses.find((c) => c.id === +req.params.id);
     if (!FoundCourse) {
         res.sendStatus(404);
         return;
     }
     res.json(FoundCourse);
 });
-//http://localhost:3000/courses/3   получим  { id: 3, title: "automation qa" }
+//http://localhost:3003/courses/3   получим  { id: 3, title: "automation qa" }
 app.listen(port, () => {
     console.log(`exaple port listening on ${port}`);
 });
