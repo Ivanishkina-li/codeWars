@@ -6,7 +6,7 @@ const server = http.createServer((req, res) => {
   console.log(req.url, req.method);
 
   res.setHeader("Content-type", "application/json");
-
+  //fg
   const data = JSON.stringify([
     { name: "Tommy", age: 35 },
     { name: "Arthur", age: 40 },
